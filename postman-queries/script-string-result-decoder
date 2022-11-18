@@ -1,0 +1,27 @@
+pm.test("decoded base64", function () {
+    var crypto = require("crypto-js")
+    var jsonData = pm.response.json();
+    var encoded = jsonData.data.data.returnData
+    console.log(encoded);
+    if(!encoded.length > 0) {
+        pm.test("FAIL", () => {throw new Error("return is empty !!")})
+    } else {
+        try {
+            encoded.map(elem => {
+                console.log({elem})
+                let hex = Buffer.from(elem, 'base64').toString("hex");
+                console.log({hex})
+                pm.test(hex,function(){});
+                let string = Buffer.from(elem, 'base64').toString("UTF-8")
+                console.log({string})
+                pm.test(string,function(){});
+                let decimal = hex.toString(10);
+                console.log({decimal})
+                pm.test(decimal,function(){});
+            })
+        }catch(e){
+            pm.test("FAIL", () => {throw new Error("Malformed return data, please verify the results.")});
+            console.log(e);
+        }
+    }
+});
