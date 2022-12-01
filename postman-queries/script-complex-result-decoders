@@ -1,3 +1,29 @@
+function h2d(s) {
+
+    function add(x, y) {
+        var c = 0, r = [];
+        var x = x.split('').map(Number);
+        var y = y.split('').map(Number);
+        while(x.length || y.length) {
+            var s = (x.pop() || 0) + (y.pop() || 0) + c;
+            r.unshift(s < 10 ? s : s - 10); 
+            c = s < 10 ? 0 : 1;
+        }
+        if(c) r.unshift(c);
+        return r.join('');
+    }
+
+    var dec = '0';
+    s.split('').forEach(function(chr) {
+        var n = parseInt(chr, 16);
+        for(var t = 8; t; t >>= 1) {
+            dec = add(dec, dec);
+            if(n & t) dec = add(dec, '1');
+        }
+    });
+    return dec;
+}
+
 function hex2a(hexx) {
     var hex = hexx.toString();//force conversion
     var str = '';
@@ -16,7 +42,7 @@ function decode_structure(attributes_hex, decode_struct) {
     function fixed_length_primitive(attributes, start_index, primitive_len) {
         var [index_first, index_last] = slide_indexes(start_index, primitive_len);
         var result_hex = attributes.slice(index_first, index_last);
-        var result_int = parseInt(result_hex, 16);
+        var result_int = h2d(result_hex);
         return [result_int, result_hex, index_last];
     }
 
